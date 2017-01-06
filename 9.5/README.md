@@ -1,6 +1,10 @@
 PGHoard Restoration Docker image
 ================================
 
+This image will restore a PGHoard backed up site to a local PostgreSQL server.
+Just run it with the same parameters as the camptocamp/pghoard image plus the
+`PGHOARD_RESTORE_SITE` parameter.
+
 Usage:
 ------
 
