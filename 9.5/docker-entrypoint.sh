@@ -52,9 +52,18 @@ else
   OUT_LINES=$(gosu postgres psql -c "$RESTORE_CHECK_COMMAND" "$RESTORE_CHECK_DB" | wc -l)
   echo "AutoCheck: $OUT_LINES lines returned"
 
-  if [ $OUT_LINES -gt 0 ]
-  then echo "AutoCheck: SUCCESS"
-  else echo "AutoCheck: FAILURE"
+  if [ $OUT_LINES -gt 0 ]; then
+    echo "AutoCheck: SUCCESS"
+    RES=1
+  else
+    echo "AutoCheck: FAILURE"
+    RES=0
+  fi
+
+  if [ ! -z "$PUSHGATEWAY_URL" ]; then
+    cat << EOF | curl --binary-data @- ${PUSHGATEWAY_URL}/metrics/jobs/pghoard_restore/instances/${PGHOARD_RESTORE_SITE}
+check_success ${RES}
+EOF
   fi
 
 fi
