@@ -24,6 +24,9 @@ cat /home/postgres/pghoard.json
 echo "Get the latest available basebackup ..."
 gosu postgres pghoard_restore get-basebackup --config pghoard.json --site $PGHOARD_RESTORE_SITE --target-dir restore --restore-to-master --recovery-target-action promote --recovery-end-command "pkill pghoard" --overwrite
 
+# remove custom server configuration (espacially the hot standby parameter)
+gosu postgres rm -f restore/postgresql.auto.conf
+
 echo "Start the pghoard daemon ..."
 gosu postgres pghoard --short-log --config /home/postgres/pghoard.json &
 
